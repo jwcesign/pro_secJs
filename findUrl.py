@@ -22,7 +22,7 @@ outLink = ['javascript:;','/']
 SERVICE_ARGS = ['--load-images=false', '--disk-cache=true']
 driver = webdriver.PhantomJS(service_args=SERVICE_ARGS, executable_path='/home/cesign/sf/pj/bin/phantomjs')
 
-def findUrls(startUrl, de, domain):
+def findUrls(startUrl, de, domain, otherAr):
 	global outLink
 	global urls
 	global cedUrls
@@ -53,7 +53,7 @@ def findUrls(startUrl, de, domain):
 				else:
 					if i != '':
 						if i[0] == '/':
-							i = 'http://jwcesign.studio'+i
+							i = otherAr+i
 							#print i
 							if domain in i and urls.has_key(de):
 								if i not in urls[de] and i not in totalUrls:
@@ -76,8 +76,15 @@ def findUrls(startUrl, de, domain):
 
 def main():
 	global deep
+	global totalUrls
 	theDomain = 'jwcesign.studio'
-	findUrls("http://jwcesign.studio/", deep, theDomain)
-
+	theStartRe = 'http://jwcesign.studio'
+	print '[*] Trying to find urls....... Maybe it will cost a lot of time...'
+	findUrls("http://jwcesign.studio/", deep, theDomain, theStartRe)
+	#write the urls into file
+	f = open('urls.txt','w')
+	for i in totalUrls:
+		f.write(i+'\n')
+	print '[*] Fninish!!!'
 main()
 driver.quit()
