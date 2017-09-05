@@ -2,7 +2,11 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import time
+import re
 #import urllib
+import sys  
+reload(sys)  
+sys.setdefaultencoding('utf8')  
 
 
 '''
@@ -27,7 +31,10 @@ def findUrls(startUrl, de, domain, otherAr):
 	global urls
 	global cedUrls
 	global totalUrls
+	if startUrl[-1] == '/':
+		startUrl = startUrl[:-1]
 	if de == 0:
+		print startUrl
 		urls[de] = []
 		urls[de].append(startUrl)
 		totalUrls.append(startUrl)
@@ -35,56 +42,52 @@ def findUrls(startUrl, de, domain, otherAr):
 	if startUrl not in cedUrls:
 		driver.get(startUrl)
 		cedUrls.append(startUrl)
-		#time.sleep(0.5)
+		# time.sleep(1)
 		soup = BeautifulSoup(driver.page_source,"html.parser")
 		#print driver.page_source
 		for i in soup.find_all('a'):
 			i = i.get('href')
-			#print i
-			if not urls.has_key(de) and i not in totalUrls:
-				urls[de] = []
-			if i is not None and i not in outLink and '#' not in i:
-				if 'http' in i:
-					if domain in i and urls.has_key(de):
-						if i not in urls[de] and i not in totalUrls:
-							print i
-							urls[de].append(i)
-							totalUrls.append(i)
-				else:
-					if i != '':
-						if i[0] == '/':
-							i = otherAr+i
-							#print i
-							if domain in i and urls.has_key(de):
-								if i not in urls[de] and i not in totalUrls:
-									print i
-									urls[de].append(i)
-									totalUrls.append(i)
-					else:
-						if i != '':
-							mainUrl = re.find_all(r'.*\/',i)[0]
-							i = mainUrl+i
-							#print i
-							if domain in i and urls.has_key(de):
-								if i not in urls[de] and i not in totalUrls:
-									print i
-									urls[de].append(i)
-									totalUrls.append(i)
+			# print i
+			# solve: a/b/c; a/b/c/
+			if i != None and i != '':
+				if i[0] == '/':
+					if len(i) >= 2:
+						if i[1] == '/':
+							i = 'http:'+i
+						else:
+							i = otherAr+i							
+				if i[0] == '.':
+					i = re.findall(r'^[^?]*/',startUrl)[0]+i[2:]
+				elif 'http' and ':' not in i:
+					i = re.findall(r'^[^?]*/',startUrl)[0]+i
+				if i[-1] == '/':
+					i = i[:-1]
+				#print i
+				if i not in totalUrls:
+					if not urls.has_key(de):
+						urls[de] = []
+					if i not in outLink and '#' not in i and re.findall(r'^http',i):
+						if domain in re.findall(r'^[^?]*/',i)[0]:
+							if i not in urls[de]:
+								print i
+								urls[de].append(i)
+								totalUrls.append(i)
 		if urls.has_key(de):
 			for i in urls[de]:
-				findUrls(i,de+1,domain)
+				findUrls(i,de+1,domain, otherAr)
 
 def main():
 	global deep
 	global totalUrls
-	theDomain = 'jwcesign.studio'
-	theStartRe = 'http://jwcesign.studio'
-	print '[*] Trying to find urls....... Maybe it will cost a lot of time...'
-	findUrls("http://jwcesign.studio/", deep, theDomain, theStartRe)
+	theDomain = 'bilibili.com'
+	theStartRe = 'https://www.bilibili.com'
+	print '[*] Trying to find urls....... Maybe it will take a lot of time...'
+	findUrls("https://www.bilibili.com", deep, theDomain, theStartRe)
 	#write the urls into file
 	f = open('urls.txt','w')
 	for i in totalUrls:
 		f.write(i+'\n')
+		#print i
 	print '[*] Fninish!!!'
 main()
 driver.quit()
