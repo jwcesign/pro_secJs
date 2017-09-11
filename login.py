@@ -39,11 +39,12 @@ def main(url):
     input_find = form_code.find_all('input')
     for i in input_find:
         if i.get('type') != 'hidden' and i.get('name') in username:
-            print i
+            usernameid = i.get('id')
         if i.get('type') != 'hiddne' and i.get('name') in password:
-            print i
+            passwordid = i.get('id')
         if i.get('value') in login and i.get('type') != 'hidden':
-            print i
+            submitid = i.get('id')
+    # id找到，接下来sendtext和submit数据
 # 测试部分
 url="http://cas.hdu.edu.cn/cas/login"
 main(url)
