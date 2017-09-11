@@ -37,14 +37,14 @@ r=re.compile(r'cesign_[0-9]*?_[0-9]*')
 
 
 #edit,the path of chromdriver
-chromedriver = '/home/cesign/sf/cd/chromedriver'  
-chome_options = webdriver.ChromeOptions()  
+chromedriver = '/home/cesign/sf/cd/chromedriver'
+chome_options = webdriver.ChromeOptions()
 chome_options.add_argument(('--proxy-server=http://' + 'localhost:8080'))
 chome_options.add_argument("--disable-application-cache")
 chome_options.add_argument("--disk-cache-size=0")
 
-os.environ["webdriver.chrome.driver"] = chromedriver  
-driver = webdriver.Chrome(chromedriver, chrome_options=chome_options)  
+os.environ["webdriver.chrome.driver"] = chromedriver
+driver = webdriver.Chrome(chromedriver, chrome_options=chome_options)
 
 def iterationGet(url):
 	global iter_num
@@ -59,7 +59,7 @@ def iterationGet(url):
 	time.sleep(1)
 	soup=BeautifulSoup(driver.page_source,'html.parser')
 	for each in soup.find_all(name='a'):
-		
+
 		if 'cesign' in str(each):
 			rp=re.split(r'\/|\&|\?|\:',url.replace('*','&'))
 			tmp=re.findall(r,each.get('href'))
@@ -118,10 +118,10 @@ def main(url):
 	old_url_save = {}
 	furl = open('./c/url.txt','w')
 	source = driver.page_source
-	soup = BeautifulSoup(source,"html.parser")  
-	href = soup.find_all(name='a') 
-	
-	for each in href:  
+	soup = BeautifulSoup(source,"html.parser")
+	href = soup.find_all(name='a')
+
+	for each in href:
 	    furl.write(str(each.get('href'))+'\n')
 	    old_url_save[i]=str(each.get('href'))
 	    i+=1
@@ -168,5 +168,5 @@ def main(url):
 main('test')
 
 # about the result
-# [*] page:test.js 
+# [*] page:test.js
 # word&3 means that the url is related to the third word 'word' in the file test.js
