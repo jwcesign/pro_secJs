@@ -10,8 +10,8 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 # 用户资料
-usreinfo = {
-    'username':'cesign',
+userinfo = {
+    'username':'15081517',
     'password':'jw333333'
 }
 
@@ -28,13 +28,24 @@ chome_options.add_argument("--disable-application-cache")
 chome_options.add_argument("--disk-cache-size=0")
 driver = webdriver.Chrome(chromedriver, chrome_options=chome_options)
 
+def sendData(usernameid,passwordid,submitid):
+    global userinfo
+    print userinfo['username']
+    print userinfo['password']
+    driver.find_element_by_id(usernameid).send_keys(userinfo['username'])
+    driver.find_element_by_id(passwordid).send_keys(userinfo['password']);
+    time.sleep(6)
+    driver.find_element_by_id(submitid).click()
+
 def main(url):
     usernameid = ''
     passwordid = ''
-    submitid = ''
+    # submitid = ''
+    formid = ''
     driver.get(url)
     source_code = BeautifulSoup(driver.page_source,'html.parser')
-    form_code = str(source_code.find_all('form')[0])
+    form_code = source_code.find_all('form')[0]
+    form_code = str(form_code)
     form_code = BeautifulSoup(form_code,'html.parser')
     input_find = form_code.find_all('input')
     for i in input_find:
@@ -43,8 +54,12 @@ def main(url):
         if i.get('type') != 'hiddne' and i.get('name') in password:
             passwordid = i.get('id')
         if i.get('value') in login and i.get('type') != 'hidden':
-            submitid = i.get('id')
+             submitid = i.get('id')
+
+    print submitid
     # id找到，接下来sendtext和submit数据
+    sendData(usernameid,passwordid,submitid)
+
 # 测试部分
 url="http://cas.hdu.edu.cn/cas/login"
 main(url)
