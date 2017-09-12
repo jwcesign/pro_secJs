@@ -9,6 +9,7 @@ import sys
 
 reload(sys)
 sys.setdefaultencoding('utf8')
+
 # 用户资料
 userinfo = {
     'username':'15081517',
@@ -35,16 +36,20 @@ def sendData(usernameid,passwordid,submitid):
     driver.find_element_by_id(usernameid).send_keys(userinfo['username'])
     driver.find_element_by_id(passwordid).send_keys(userinfo['password']);
     time.sleep(6)
-    driver.find_element_by_id(submitid).click()
+    # 现在的问题是id重复，导致的问题
+    driver.find_element_by_id(submitid).submit()
 
 def main(url):
+    global driver
     usernameid = ''
     passwordid = ''
-    # submitid = ''
+    submitid = ''
     formid = ''
     driver.get(url)
     source_code = BeautifulSoup(driver.page_source,'html.parser')
     form_code = source_code.find_all('form')[0]
+    formid = form_code.get('id')
+    print formid
     form_code = str(form_code)
     form_code = BeautifulSoup(form_code,'html.parser')
     input_find = form_code.find_all('input')
@@ -53,12 +58,11 @@ def main(url):
             usernameid = i.get('id')
         if i.get('type') != 'hiddne' and i.get('name') in password:
             passwordid = i.get('id')
-        if i.get('value') in login and i.get('type') != 'hidden':
-             submitid = i.get('id')
-
-    print submitid
+        # if i.get('value') in login and i.get('type') != 'hidden':
+        #      submitid = i.get('id')
+    # print submitid
     # id找到，接下来sendtext和submit数据
-    sendData(usernameid,passwordid,submitid)
+    sendData(usernameid,passwordid,formid)
 
 # 测试部分
 url="http://cas.hdu.edu.cn/cas/login"
