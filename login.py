@@ -12,8 +12,8 @@ sys.setdefaultencoding('utf8')
 
 # 用户资料
 userinfo = {
-    'username':'15081517',
-    'password':'jw333333'
+    'username':'username',
+    'password':'passwd'
 }
 
 # 输入框关键词
