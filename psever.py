@@ -496,7 +496,7 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
                             res_body=res_body[:flag+len(i)]+'cesign_'+str(m)+'_'+str(n)+'-'+res_body[flag+len(i):]
                         start+=1
                         n+=1
-                    m+=1                
+                    m+=1
             pass
 
         print js_file

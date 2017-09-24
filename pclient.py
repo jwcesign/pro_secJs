@@ -40,6 +40,7 @@ r=re.compile(r'cesign_[0-9]*?_[0-9]*')
 chromedriver = '/home/cesign/sf/cd/chromedriver'
 chome_options = webdriver.ChromeOptions()
 chome_options.add_argument(('--proxy-server=http://' + 'localhost:8080'))
+chome_options.add_argument("--headless")
 chome_options.add_argument("--disable-application-cache")
 chome_options.add_argument("--disk-cache-size=0")
 
