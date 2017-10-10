@@ -13,8 +13,8 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 # 变量
-urlMain = 'http://www.cnvd.org.cn'
-url_be = 'http://www.cnvd.org.cn/flaw/typeResult?max=100&offset='
+url_main = 'http://www.cnvd.org.cn'
+url_be = 'http://www.cnvd.org.cn/flaw/typeResult?max=20&offset='
 url_en = '&typeId=29'
 # 获取信息量数, 没有应用
 number_get = 30
@@ -29,7 +29,7 @@ chome_options.add_argument("--headless")
 driver = webdriver.Chrome(chromedriver, chrome_options=chome_options)
 driver.set_page_load_timeout(5)
 driver.set_script_timeout(5)
-driver.get(urlMain)
+driver.get(url_main)
 # 获取到cookie
 cookies = driver.get_cookies()
 cookies_save=''
@@ -42,11 +42,11 @@ cookies_save = str(cookies_save[:-2])
 def refCookie(page_code):
     global headers
     global driver
-    global urlMain
+    global url_main
     global cookies_save
     if len(page_code) < 100:
         driver.delete_all_cookies()
-        driver.get(urlMain)
+        driver.get(url_main)
         cookies = driver.get_cookies()
         cookies_save = ''
         for i in cookies:
@@ -74,7 +74,7 @@ def start():
             if 'type' not in i.get('href'):
                 # 执行详细信息寻找
                 tar = i.get('href')
-                rs = requests.get(urlMain+tar,headers=headers)
+                rs = requests.get(url_main+tar,headers=headers)
                 page = BeautifulSoup(rs.content,'html.parser')
                 print '~'*30
                 print '漏洞名称:'+page.h1.string
