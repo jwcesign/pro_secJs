@@ -8,18 +8,18 @@ import copy
 import time
 
 #proxy
-service_args = [
+proxy_args = [
     '--proxy=localhost:8080',
     '--proxy-type=http',
     ]
 
 #edit:this is the url you want to test~~~
-mainUrl='http://you.163.com/act/static/cVu7GRWG0N.html'
-#mainUrl = 'http://www.hdu.edu.cn/'
-#mainUrl="http://172.16.227.128/other/"
-#mainUrl='http://www.cnblogs.com/Silvia/archive/2012/06/15/2550691.html'
-#mainUrl="http://hzwebmail.mail.163.com/js6/main.jsp?sid=yCNGUbYAasGnDYVPhTAAAyOOPIJZFusE&df=idc2email163#module=mbox.ListModule%7C%7B%22fid%22%3A1%2C%22order%22%3A%22date%22%2C%22desc%22%3Atrue%7D"
-#mainUrl="https://baidu.com/"
+main_url='http://you.163.com/act/static/cVu7GRWG0N.html'
+#main_url = 'http://www.hdu.edu.cn/'
+#main_url="http://172.16.227.128/other/"
+#main_url='http://www.cnblogs.com/Silvia/archive/2012/06/15/2550691.html'
+#main_url="http://hzwebmail.mail.163.com/js6/main.jsp?sid=yCNGUbYAasGnDYVPhTAAAyOOPIJZFusE&df=idc2email163#module=mbox.ListModule%7C%7B%22fid%22%3A1%2C%22order%22%3A%22date%22%2C%22desc%22%3Atrue%7D"
+#main_url="https://baidu.com/"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #page diction
@@ -40,22 +40,21 @@ r=re.compile(r'cesign_[0-9]*?_[0-9]*')
 chromedriver = '/home/cesign/sf/cd/chromedriver'
 chome_options = webdriver.ChromeOptions()
 chome_options.add_argument(('--proxy-server=http://' + 'localhost:8080'))
-chome_options.add_argument("--headless")
 chome_options.add_argument("--disable-application-cache")
 chome_options.add_argument("--disk-cache-size=0")
 
 os.environ["webdriver.chrome.driver"] = chromedriver
 driver = webdriver.Chrome(chromedriver, chrome_options=chome_options)
 
-def iterationGet(url):
+def iteration_get(url):
 	global iter_num
 	global r
 	url=url.replace('&','*')+'&cesign='+str(iter_num)
 	iter_num+=1
-	if '?' not in mainUrl:
-		strAddr=mainUrl+'?page=1&url='+url+'&init=false'
+	if '?' not in main_url:
+		strAddr=main_url+'?page=1&url='+url+'&init=false'
 	else:
-		strAddr=mainUrl+'&page=1&url='+url+'&init=false'
+		strAddr=main_url+'&page=1&url='+url+'&init=false'
 	driver.get(strAddr)
 	time.sleep(1)
 	soup=BeautifulSoup(driver.page_source,'html.parser')
@@ -74,7 +73,7 @@ def iterationGet(url):
 					keyword.append(rp[int(tmp_it[1])])
 					print rp[int(tmp_it[1])]+'&'+tmp_it[2]
 
-def jsIteration(url,page):
+def js_iteration(url,page):
 	global r
 	global version
 	page+=2
@@ -82,10 +81,10 @@ def jsIteration(url,page):
 	url=url.replace('&','*')+'&cesign='+str(iter_num)
 	iter_num+=1
 	#radom,page
-	if '?' not in mainUrl:
-		strAddr=mainUrl+'?page='+str(page)+'&url='+url+'&init=false'
+	if '?' not in main_url:
+		strAddr=main_url+'?page='+str(page)+'&url='+url+'&init=false'
 	else:
-		strAddr=mainUrl+'&page='+str(page)+'&url='+url+'&init=false'
+		strAddr=main_url+'&page='+str(page)+'&url='+url+'&init=false'
 	driver.get(strAddr)
 	time.sleep(1)
 	soup=BeautifulSoup(driver.page_source,'html.parser')
@@ -106,10 +105,10 @@ def jsIteration(url,page):
 
 def main(url):
 	global keyword
-	if '?' not in mainUrl:
-		driver.get(mainUrl+'?page=1&init=true')
+	if '?' not in main_url:
+		driver.get(main_url+'?page=1&init=true')
 	else:
-		driver.get(mainUrl+'&page=1&init=true')
+		driver.get(main_url+'&page=1&init=true')
 
 	#Wait the page loaded completely
 	time.sleep(1)
@@ -149,7 +148,7 @@ def main(url):
 						sta=False
 						break
 			if not sta:
-				iterationGet(old_url_save[j])
+				iteration_get(old_url_save[j])
 
 	#js_file_test
 	src=soup.find_all(name='script')
@@ -165,8 +164,10 @@ def main(url):
 		if 'jquery' not in js_file[i] and 'bootstrap' not in js_file[i]:
 			for j in range(len(old_url_save)):
 				if old_url_save[j]!='':
-					jsIteration(old_url_save[j],i)
-main('test')
+					js_iteration(old_url_save[j],i)
+
+if __name__ == '__main__':
+    main('test')
 
 # about the result
 # [*] page:test.js
